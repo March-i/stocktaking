@@ -17,7 +17,7 @@ class CreateDeveloperHasProjectTable extends Migration
             $table->bigIncrements('id');
             $table->bigInteger('project_id')->unsigned()->index();
             $table->foreign('project_id')->references('id')->on('projects');
-            $table->bigInteger('developer_id');
+            $table->bigInteger('developer_id')->unsigned()->index();
             $table->foreign('developer_id')->references('id')->on('developers');
             $table->timestamps();
 
@@ -35,6 +35,6 @@ class CreateDeveloperHasProjectTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('developer_has_project_foreign');
+        Schema::dropIfExists('developer_has_project');
     }
 }
