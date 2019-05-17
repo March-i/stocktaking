@@ -14,3 +14,11 @@
 Route::get('/', function () {
     return view('index');
 });
+
+Route::resource('developers', 'DeveloperController');
+
+Route::resource('projects', 'ProjectController');
+
+Route::resource('developer-has-project', 'DeveloperHasProjectController');
+
+
