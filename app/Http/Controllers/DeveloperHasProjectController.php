@@ -85,9 +85,9 @@ class DeveloperHasProjectController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(DeveloperHasProject $developerOnProject)
+    public function destroy(DeveloperHasProject $developerHasProject)
     {
-        $developerOnProject->delete();
+        $developerHasProject->delete();
 
         return response()->json(['success'=>'Data is successfully removed']);
     }

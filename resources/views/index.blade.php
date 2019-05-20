@@ -10,7 +10,11 @@
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-
+    <style>
+        .delete-developer-from-project {
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
 
@@ -259,7 +263,7 @@
 
                         for (var i = 0; i < result.length; i++) {
                             var item = result[i];
-                            var developersRelations = developersHasProject.filter(function(relation){
+                            var developersRelations = developersHasProject.filter(function (relation) {
                                 return relation.project_id === item.id;
                             });
                             var developersOnProject = [];
@@ -270,14 +274,14 @@
                                     return relation.developer_id === developer.id;
                                 });
                                 if (relation) {
-                                    developersOnProject.push('<li data-id="'+relation.id+'">'+developer.name+'<button type="button" class="btn btn-link" id="deleteDeveloperFromProject" ><sub>Delete</sub></button ><input type="hidden" id="updateId"></li>');
+                                    developersOnProject.push('<div data-id="' + relation.id + '"><span data-id="'+relation.id+'" class="badge badge-danger delete-developer-from-project">&#10060;</span> <span class="badge badge-info">' + developer.name + '</span></div>');
                                     continue;
                                 }
                                 availableDeveloperList.push('<a class="dropdown-item add-developer-to-project" data-project="' + item.id + '" data-id="' + developer.id + '">' + developer.name + '</a>');
                             }
                             availableDeveloperList = availableDeveloperList.join('');
                             developersOnProject = developersOnProject.join('');
-                            var markup = "<tr data-id='" + item.id + "'><td scope=\"row\">" + (i + 1) + "</td><td>" + item.title + "</td><td>" + item.description + "</td><td><div>"+developersOnProject+"</div><div class=\"btn-group\"><button class=\"btn btn-secondary btn-sm dropdown-toggle\" type=\"button\" data-toggle=\"dropdown\">Add developer</button><div class=\"dropdown-menu\">" + availableDeveloperList + "</div></div></td><td><button type=\"button\" class=\"btn btn-secondary btn-sm btn-change-project\" >Change</button></tr>";
+                            var markup = "<tr data-id='" + item.id + "'><td scope=\"row\">" + (i + 1) + "</td><td>" + item.title + "</td><td>" + item.description + "</td><td><div>" + developersOnProject + "</div><div class=\"btn-group\"><button class=\"btn btn-secondary btn-sm dropdown-toggle\" type=\"button\" data-toggle=\"dropdown\">Add developer</button><div class=\"dropdown-menu\">" + availableDeveloperList + "</div></div></td><td><button type=\"button\" class=\"btn btn-secondary btn-sm btn-change-project\" >Change</button></tr>";
                             $("#projectsTable").append(markup);
                         }
                         $(".btn-change-project").click(function () {
@@ -348,9 +352,10 @@
                     title: jQuery('#newTitle').val(),
                     description: jQuery('#newDescription').val()
                 },
-                success: function (result) {if (result.success) {
-                    showMessage(result.success);
-                }
+                success: function (result) {
+                    if (result.success) {
+                        showMessage(result.success);
+                    }
                     loadProjectData();
                     $('#newProject').modal('hide');
                 }
@@ -453,9 +458,9 @@
             });
         });
 
-        jQuery('#deleteDeveloperFromProject').click(function (e) {
+        jQuery('body').on('click', '.delete-developer-from-project', function (e) {
             e.preventDefault();
-            var id = jQuery('#updateId').val();
+            var id = jQuery(this).data('id');
             jQuery.ajax({
                 url: "{{ url('/developer-has-project') }}/" + id,
                 method: "post",
@@ -464,12 +469,11 @@
                 },
                 success: function (result) {
 
-                    loadDeveloperData();
+                    loadProjectData();
 
                 }
             })
-        })
-
+        });
 
 
         loadDeveloperData();
